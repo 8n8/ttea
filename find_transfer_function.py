@@ -89,6 +89,7 @@ def optimise():
     return min(all_data_sets(data), key=lambda x:x['gap'])
 
 
+x
 print(optimise())
 
 
