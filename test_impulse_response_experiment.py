@@ -1,3 +1,10 @@
+"""
+A few simple tests for the functions in 
+impulse_response_experiment that are easy to test.
+When run, this script should print out True, True ... etc.
+If there is a False then a test has failed.
+"""
+
 import impulse_response_experiment as ire
 
 def test_valid_reading():

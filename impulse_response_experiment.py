@@ -1,6 +1,15 @@
-#import serial
+"""
+This program runs an experiment on a 3D printer and
+captures the impulse response of the nozzle.  This 
+file is structured as several small functions that 
+are used in the do_it_all function at the bottom of the
+file.
+"""
+
+import serial
 import time
 import csv
+import matplotlib.pyplot as plt
 
 
 def get_data_from_printer(ser):
@@ -92,6 +101,30 @@ def write_data_to_file(data,filename):
     """
     with open(filename,'w') as f:
         csv.writer(f).writerows(data)
+
+        
+def plot_data(data):
+    x = [i[0] for i in data]
+    y = [i[1] for i in data]
+    plt.plot(x,y,'r-')
+    plt.ylabel('Nozzle temperature')
+    plt.xlabel('Time')
+    plt.savefig('impulse_response.eps',format='eps',dpi=1000)
+        
+
+def do_it_all():
+    """
+    It uses the functions defined above to run the experiment,
+    save the data to a file and plot it.
+    """
+    data = take_n_readings(400)
+    write_data_to_file(data,'impulse_response.csv')
+    plot_data(data)
+
+    
+do_it_all()    
+    
+
 
 
 
