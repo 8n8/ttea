@@ -1,4 +1,8 @@
 *
 !*.py
 !.gitignore
+bridge_print.py
+temp_graphs.py
+temp_test.py
+
 
