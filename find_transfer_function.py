@@ -41,15 +41,14 @@ def impulse_response(t,a,b,c):
     return a*math.exp(-b*(t-c))
 
 
-def data_set(data,a,b,c):
+def data_set(times,a,b,c):
     """ 
     a,b, and c are the parameters for the theoretical 
     impulse response and data is the experimental data 
     set.  This function will calculate the theoretical 
     data set.
     """
-    t = [i[0] for i in data]
-    return [impulse_response(tt,a,b,c) for tt in t]
+    return [impulse_response(t,a,b,c) for t in times]
 
 
 def data_diff(dat1,dat2):
@@ -64,11 +63,12 @@ def all_data_sets(data):
     """
     It makes all the possible data sets.
     """
-    a_range = np.linspace(0,10,20)
-    b_range = np.linspace(0,10,20)
-    c_range = np.linspace(0,10,20)
+    a_range = np.linspace(0,10,10)
+    b_range = np.linspace(0,10,60)
+    c_range = np.linspace(0,10,60)
     y_vals = [d[1] for d in data]
-    return ({'gap':data_diff(data_set(data,a,b,c), y_vals),
+    times = [d[0] for d in data]
+    return ({'gap':data_diff(data_set(times,a,b,c), y_vals),
              'a':a, 'b':b, 'c':c}
             for a in a_range
             for b in b_range
@@ -85,7 +85,7 @@ def optimise():
     least-squares difference with the experimental data set.
     """
     data = convert_2_float(
-        read_data_from_file('impulse_response.csv'))
+        read_data_from_file('small_impulse_response.csv'))
     return min(all_data_sets(data), key=lambda x:x['gap'])
 
 
