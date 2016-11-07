@@ -38,7 +38,7 @@ def get_data_from_printer(ser):
     reading.
     """
     ser.write(b'M105\r\n')
-    time.sleep(0.5)
+    time.sleep(1)
     return(ser.read(ser.inWaiting()))
 
 
@@ -68,7 +68,9 @@ def one_reading(ser):
     reading.
     """
     dat = get_data_from_printer(ser)
-    if not valid_reading(dat): return
+    if not valid_reading(dat):
+        print('invalid result')
+        return
     temperature = extract_temp_from_reading(dat)
     return(temperature)
 
@@ -99,7 +101,7 @@ def impulse(ser):
     """ It sends an impulse to the printer. """
     print('Sending Impulse')
     ser.write(b'M104 S999\r\n')
-    time.sleep(1)
+    time.sleep(2)
     ser.write(b'M104 S0\r\n')
 
 
@@ -109,13 +111,16 @@ def take_n_readings(n):
     the impulse response.
     """
     ser = setup_link()
+    ser.write(b'M106 S0\r\n')
 
     impulse(ser)
 
     start = time.time()
 
     raw_results = [[time.time()-start,one_reading(ser)] for i in range(n)]
-    results_with_no_nulls = [x for x in raw_results if x[1] != None] 
+    results_with_no_nulls = [x for x in raw_results if x[1] != None]
+    ser.write(b'M106 S255\r\n')
+    ser.close()
     return(results_with_no_nulls)
 
 
@@ -144,10 +149,11 @@ def do_it_all():
     It uses the functions defined above to run the experiment,
     save the data to a file and plot it.
     """
-    data = take_n_readings(360)
+    data = take_n_readings(400)
     write_data_to_file(data,'impulse_response.csv')
     print('Data written to impulse_response.csv')
     plot_data(data)
+    
 
     
 do_it_all()    
