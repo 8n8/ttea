@@ -24,6 +24,7 @@ experimental impulse response data for a system.
 
 import csv
 import math
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -79,16 +80,36 @@ def convert_2_float(data):
     return [[float(x[0]),float(x[1])] for x in data]
 
 
-def optimise():
+def optimise(data):
     """
     It finds the set of parameters that give the smallest
     least-squares difference with the experimental data set.
     """
-    data = convert_2_float(
-        read_data_from_file('small_impulse_response.csv'))
     return min(all_data_sets(data), key=lambda x:x['gap'])
 
 
-print(optimise())
+def plot_data(data,p):
+    """ 
+    p is a dictionary containing the impulse response
+    parameters.
+    """
+    x = [i[0] for i in data]
+    y1 = [i[1] for i in data]
+    plt.plot(x,y1,'r-',label='data')
+    y2 = data_set(x,p['a'],p['b'],p['c'])
+    plt.plot(x,y2,'g-',label='model')
+    plt.ylabel('Nozzle temperature')
+    plt.xlabel('Time')
+    plt.legend(loc='upper right')
+    plt.savefig('impulse_response.eps',format='eps',dpi=1000)
+    plt.show()
+
+def do_it_all():
+    data = convert_2_float(
+        read_data_from_file('small_impulse_response.csv'))
+    p = optimise(data)
+    plot_data(data,p)
+
+do_it_all()
 
 
