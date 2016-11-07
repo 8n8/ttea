@@ -45,8 +45,9 @@ def valid_reading(r):
     """ 
     It checks if the data from the printer contains 
     the needed information.
-    """ 
-    return(r != '' and ':' in r and 'S' not in r)
+    """
+    s = str(r)
+    return(r != '' and ':' in s and 'S' not in s)
 
 
 def extract_temp_from_reading(reading):
@@ -72,19 +73,21 @@ def one_reading(ser):
 
 def setup_link():
     """ It will connect to the printer. """
+    print('Connecting to Printer...')
     ser = serial.Serial(port='COM4',baudrate=250000)
     
     time.sleep(1)
     ser.setDTR(0)
     time.sleep(1)
 
-    kp = 1
-    ki = 0
-    kd = 0
+    kp = '1.0'
+    ki = '0.0'
+    kd = '0.0'
 
     ser.write(b'M301 P' + kp.encode() + b' I' +
               ki.encode() + b' D' + kd.encode()
-              + b'\r\n') 
+              + b'\r\n')
+    print('PID Values set to 1,0,0')
 
     time.sleep(2)
     return(ser)
@@ -92,6 +95,7 @@ def setup_link():
 
 def impulse(ser):
     """ It sends an impulse to the printer. """
+    print('Sending Impulse')
     ser.write(b'M104 S999\r\n')
     time.sleep(2)
     ser.write(b'M104 S0\r\n')
@@ -120,9 +124,10 @@ def write_data_to_file(data,filename):
     """
     with open(filename,'w') as f:
         csv.writer(f).writerows(data)
-
+    
         
 def plot_data(data):
+    print('Plotting...')
     x = [i[0] for i in data]
     y = [i[1] for i in data]
     plt.plot(x,y,'r-')
@@ -136,8 +141,9 @@ def do_it_all():
     It uses the functions defined above to run the experiment,
     save the data to a file and plot it.
     """
-    data = take_n_readings(400)
+    data = take_n_readings(40)
     write_data_to_file(data,'impulse_response.csv')
+    print('Data written to impulse_response.csv')
     plot_data(data)
 
     
