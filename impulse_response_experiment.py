@@ -1,5 +1,6 @@
 """
 Copyright 2016 True Ghiassi <true@ghiassitrio.co.uk>
+and Tinaes <ta371@cam.ac.uk>
 
 This file is part of TTea.   
 
@@ -55,8 +56,9 @@ def extract_temp_from_reading(reading):
     It extracts the temperature from the data produced
     by the printer.
     """
-    colon = reading.find(':')
-    return(reading[(colon+1):(colon+6)])
+    s = str(reading)
+    colon = s.find(':')
+    return(s[(colon+1):(colon+6)])
 
 
 def one_reading(ser):
