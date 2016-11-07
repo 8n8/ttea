@@ -99,7 +99,7 @@ def impulse(ser):
     """ It sends an impulse to the printer. """
     print('Sending Impulse')
     ser.write(b'M104 S999\r\n')
-    time.sleep(2)
+    time.sleep(1)
     ser.write(b'M104 S0\r\n')
 
 
@@ -136,6 +136,7 @@ def plot_data(data):
     plt.ylabel('Nozzle temperature')
     plt.xlabel('Time')
     plt.savefig('impulse_response.eps',format='eps',dpi=1000)
+    plt.show()
         
 
 def do_it_all():
@@ -143,7 +144,7 @@ def do_it_all():
     It uses the functions defined above to run the experiment,
     save the data to a file and plot it.
     """
-    data = take_n_readings(40)
+    data = take_n_readings(360)
     write_data_to_file(data,'impulse_response.csv')
     print('Data written to impulse_response.csv')
     plot_data(data)
