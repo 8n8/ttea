@@ -30,7 +30,7 @@ import numpy as np
 
 def read_data_from_file(filename):
     with open(filename,'r') as f:
-        return list(csv.reader(f))
+        return [x for x in list(csv.reader(f)) if x!=[]]
 
 
 def impulse_response(t,a,b,c):
@@ -39,7 +39,7 @@ def impulse_response(t,a,b,c):
     assumed to be a decaying exponential with a time
     delay.  
     """
-    return a*math.exp(-b*(t-c))
+    return a*math.exp(-b*(t-c))+25
 
 
 def data_set(times,a,b,c):
@@ -52,24 +52,24 @@ def data_set(times,a,b,c):
     return [impulse_response(t,a,b,c) for t in times]
 
 
-def data_diff(dat1,dat2):
+def data_diff(dat1,data):
     """
     It will do a least_squares comparison between two
     lists of data.
     """
-    return sum((d1-d2)**2 for d1,d2 in zip(dat1,dat2))
+    return sum(abs(d1-d[1]) for d1,d in zip(dat1,data) if d[0] > 40)
 
 
 def all_data_sets(data):
     """
     It makes all the possible data sets.
     """
-    a_range = np.linspace(0,10,10)
-    b_range = np.linspace(0,10,60)
-    c_range = np.linspace(0,10,60)
+    a_range = np.linspace(3,8,20)
+    b_range = np.linspace(0,0.3,100)
+    c_range = np.linspace(40,60,30)
     y_vals = [d[1] for d in data]
     times = [d[0] for d in data]
-    return ({'gap':data_diff(data_set(times,a,b,c), y_vals),
+    return ({'gap':data_diff(data_set(times,a,b,c), data),
              'a':a, 'b':b, 'c':c}
             for a in a_range
             for b in b_range
@@ -106,8 +106,10 @@ def plot_data(data,p):
 
 def do_it_all():
     data = convert_2_float(
-        read_data_from_file('small_impulse_response.csv'))
+        read_data_from_file('impulse_response1.csv'))
+    #print(read_data_from_file('impulse_response1.csv'))
     p = optimise(data)
+    print(p)
     plot_data(data,p)
 
 do_it_all()

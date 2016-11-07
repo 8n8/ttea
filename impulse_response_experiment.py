@@ -38,7 +38,7 @@ def get_data_from_printer(ser):
     reading.
     """
     ser.write(b'M105\r\n')
-    time.sleep(1)
+    time.sleep(2)
     return(ser.read(ser.inWaiting()))
 
 
@@ -93,7 +93,7 @@ def setup_link():
               + b'\r\n')
     print('PID Values set to 1,0,0')
 
-    time.sleep(2)
+    time.sleep(1)
     return(ser)
 
 
@@ -130,7 +130,7 @@ def write_data_to_file(data,filename):
     and a temperature.
     """
     with open(filename,'w') as f:
-        csv.writer(f).writerows(data)
+        csv.writer(f,lineterminator='\n').writerows(data)
     
         
 def plot_data(data):
@@ -149,7 +149,7 @@ def do_it_all():
     It uses the functions defined above to run the experiment,
     save the data to a file and plot it.
     """
-    data = take_n_readings(400)
+    data = take_n_readings(800)
     write_data_to_file(data,'impulse_response.csv')
     print('Data written to impulse_response.csv')
     plot_data(data)
