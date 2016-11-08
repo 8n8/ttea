@@ -99,8 +99,8 @@ def optimise():
         return -quality(data)
     k0 = [20.5,0.515,204]
     bnds = ([5,0,50],[100,20,400])
-    res = minimize(test,k0,method='L-BFGS-B',
-                   options={'maxiter':60, 'bounds':bnds,'disp':True})
+    res = minimize(test,k0,method='BFGS',
+                   options={'maxiter':60,'disp':True})
     best_test = one_test(ser,res.x)
     ser.close()
     ire.plot_data(best_test)
