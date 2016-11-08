@@ -52,6 +52,7 @@ def wait_till_95_deg(ser):
     It sets the temperature to 95 degrees and waits till it
     gets there.
     """
+    print('Waiting till 95 degrees ...')
     ser.write(b'M104 S95\r\n')
     temp = float(ire.one_reading(ser))
     while temp < 94.5 or temp > 95.5:
@@ -59,8 +60,8 @@ def wait_till_95_deg(ser):
             ser.write(b'M106 S255\r\n')
         else:
             ser.write(b'M106 S0\r\n')
-        print('Waiting till 95 degrees ...')
         temp = float(ire.one_reading(ser))
+    print('reached 95 degrees')
     return
 
 
@@ -68,7 +69,7 @@ def take_readings(ser):
     """ It takes 120 readings. """ 
     start = time.time()
     raw_results = [[time.time()-start, ire.one_reading(ser)]
-                   for in range(120)]
+                   for i in range(120)]
     return [x for x in raw_results if x[1] != None]
     
 
@@ -79,18 +80,29 @@ def one_test(ser,k):
 
 
 def quality(data):
-    return max([float(x[0]) for x in data
-                if float(x[1]) < 99 or float(x[1]) > 101])
+    q =  max([float(x[0]) for x in data
+              if float(x[1]) < 99 or float(x[1]) > 101])
+    print('quality: '+str(q))
+    return q
 
 
 def optimise():
     ser = setup_link()
-    def test(kp,ki,kd):
-        data = one_test(ser,kp,ki,kd)
+    testno = 0
+    def test(k):
+        data = one_test(ser,k)
+        ire.write_data_to_file(data,'pid_'+str(testno)+'_'+
+                               '_'+str(k[0])+'_'+
+                               str(k[1])+'_'+str(k[2])+'.csv')
+        testno += 1
         return -quality(data)
     k0 = [20.5,0.515,204]
-    res = minimize(test,k0,method='Newton-CG',
+    res = minimize(test,k0,method='BFGS',
                    options={'maxiter':60, 'disp':True})
+    best_test = one_test(ser,res.x)
+    ser.close()
+    ire.
+    ire.plot_data(best_test)
     return res.x
 
 

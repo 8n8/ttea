@@ -156,7 +156,7 @@ def do_it_all():
     
 
     
-do_it_all()    
+#do_it_all()    
     
 
 
