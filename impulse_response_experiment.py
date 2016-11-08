@@ -38,7 +38,7 @@ def get_data_from_printer(ser):
     reading.
     """
     ser.write(b'M105\r\n')
-    time.sleep(2)
+    time.sleep(0.5)
     return(ser.read(ser.inWaiting()))
 
 
