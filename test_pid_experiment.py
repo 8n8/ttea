@@ -33,7 +33,8 @@ print(test_quality())
 
 def x_squared(x):
     return x[0]**2+x[1]**(0.5)
+bnds = ([0,0],[50,50])
 
-print(minimize(x_squared,[5,2],method='BFGS',options={'maxiter':600,'disp':True}))
+print(minimize(x_squared,[5,2],method='BFGS',options={'maxiter':600,'bounds':bnds,'disp':True}))
 
     

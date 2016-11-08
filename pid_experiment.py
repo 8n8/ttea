@@ -22,7 +22,7 @@ The code in this file runs an experiment to try to find the
 best PID parameters for the controller of the printer.
 """
 
-import serial
+#import serial
 import impulse_response_experiment as ire
 from scipy.optimize import minimize
 
@@ -90,6 +90,7 @@ def optimise():
     ser = setup_link()
     testno = 0
     def test(k):
+        if min(k) < 0: return 1000
         data = one_test(ser,k)
         ire.write_data_to_file(data,'pid_'+str(testno)+'_'+
                                '_'+str(k[0])+'_'+
@@ -97,16 +98,16 @@ def optimise():
         testno += 1
         return -quality(data)
     k0 = [20.5,0.515,204]
-    res = minimize(test,k0,method='BFGS',
-                   options={'maxiter':60, 'disp':True})
+    bnds = ([5,0,50],[100,20,400])
+    res = minimize(test,k0,method='L-BFGS-B',
+                   options={'maxiter':60, 'bounds':bnds,'disp':True})
     best_test = one_test(ser,res.x)
     ser.close()
-    ire.
     ire.plot_data(best_test)
     return res.x
 
 
-optimise()
+#optimise()
     
     
     

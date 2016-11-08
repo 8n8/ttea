@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with TTea.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import serial
+#import serial
 import time
 import csv
 import matplotlib.pyplot as plt
